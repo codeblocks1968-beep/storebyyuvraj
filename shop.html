@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - Gaming Hub</title>
+    <meta name="description" content="Browse our premium selection of gaming hardware and accessories.">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar glass-panel">
+        <div class="nav-brand">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <span class="neon-text">Gaming</span> Hub
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#hero">Home</a>
+            <a href="index.html#categories">Categories</a>
+            <a href="index.html#builder">PC Builder</a>
+            <a href="index.html#products">Hardware</a>
+        </div>
+        <div class="nav-actions">
+            <input type="text" class="search-bar" id="shop-search" placeholder="Search products...">
+            <button class="icon-btn cart-btn"><i class="fas fa-shopping-cart"></i> <span class="cart-count">0</span></button>
+            <button class="btn btn-primary login-btn">Login</button>
+        </div>
+    </nav>
+
+    <div class="shop-page-container">
+        <!-- Sidebar Filters -->
+        <aside class="shop-sidebar glass-panel">
+            <div class="filter-group">
+                <h4>Categories</h4>
+                <div id="category-filters" class="checkbox-group">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Price Range</h4>
+                <div class="price-slider-wrap">
+                    <input type="range" id="price-range" min="0" max="5000" step="50" value="5000" style="width: 100%;">
+                    <div class="price-labels" style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                        <span>$0</span>
+                        <span id="price-value" class="neon-text">$5000</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Sort By</h4>
+                <select id="sort-select" class="glass-select" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border); border-radius: 4px;">
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">Best Rating</option>
+                </select>
+            </div>
+            
+            <button id="clear-filters" class="btn btn-outline w-100" style="margin-top: 1.5rem;">Clear All Filters</button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="shop-content">
+            <div class="shop-header">
+                <h2 id="category-title" class="section-title" style="text-align: left; margin-bottom: 0.5rem;">All <span class="neon-text">Hardware</span></h2>
+                <p id="results-count" style="color: var(--text-secondary); margin-bottom: 2rem;">Showing all products</p>
+            </div>
+            <div class="product-grid" id="shop-product-grid">
+                <!-- Rendered by JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-modal glass-panel" id="cart-modal">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" id="close-cart"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="btn btn-neon w-100" id="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <div class="auth-overlay" id="auth-overlay"></div>
+    <div class="auth-modal glass-panel" id="auth-modal">
+        <div class="auth-header">
+            <h3 style="margin: 0; font-size: 1.5rem;">Login to <span class="neon-text">Gaming Hub</span></h3>
+            <button class="close-btn" id="close-auth"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="auth-body">
+            <form id="login-form" class="checkout-form">
+                <input type="email" placeholder="Email Address" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-neon w-100" style="margin-top: 1rem;">Sign In</button>
+            </form>
+            <div class="auth-footer" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+                <p>Don't have an account? <a href="#" class="neon-text" style="text-decoration: none; font-weight: 600;">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/shop.js"></script>
+</body>
+</html>

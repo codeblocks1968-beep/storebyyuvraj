@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Hub - Build Your Ultimate Gaming Rig</title>
+    <meta name="description"
+        content="Gaming Hub is your premium destination for custom gaming PCs, high-performance hardware, and accessories.">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar glass-panel">
+        <div class="nav-brand">
+            <span class="neon-text">Gaming</span> Hub
+        </div>
+        <div class="nav-links">
+            <a href="#hero">Home</a>
+            <a href="#categories">Categories</a>
+            <a href="#builder">PC Builder</a>
+            <a href="#products">Hardware</a>
+        </div>
+        <div class="nav-actions">
+            <input type="text" class="search-bar" placeholder="Search components...">
+            <button class="icon-btn cart-btn"><i class="fas fa-shopping-cart"></i> <span
+                    class="cart-count">0</span></button>
+            <button class="btn btn-primary login-btn">Login</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Build Your <span class="neon-text">Ultimate</span> Gaming Rig</h1>
+            <p class="hero-subtitle">Experience next-level performance with our premium custom builds and high-end
+                hardware.</p>
+            <div class="hero-buttons">
+                <a href="#builder" class="btn btn-neon">Start Building</a>
+                <a href="shop.html" class="btn btn-outline">Shop Hardware</a>
+            </div>
+        </div>
+        <div class="hero-image-container">
+            <div class="glow-orb orb-1"></div>
+            <div class="glow-orb orb-2"></div>
+            <img src="assets/hero-pc.webp" alt="Premium Gaming PC Setup" class="hero-image"
+                onerror="this.src='https://images.unsplash.com/photo-1587202372634-32705e3bf49c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';">
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="categories">
+        <h2 class="section-title">Featured <span class="neon-text">Categories</span></h2>
+        <div class="category-grid" id="category-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- PC Builder Section -->
+    <section id="builder" class="builder">
+        <h2 class="section-title">Custom <span class="neon-text">PC Builder</span></h2>
+        <div class="builder-container glass-panel">
+            <div class="builder-sidebar">
+                <ul class="component-list" id="component-list">
+                    <!-- Rendered by JS -->
+                </ul>
+            </div>
+            <div class="builder-main">
+                <div class="compatibility-checker" id="compatibility-checker">
+                    <div class="status-indicator success"></div>
+                    <span id="compatibility-msg">All components are compatible</span>
+                </div>
+                <div class="component-selection" id="component-selection">
+                    <!-- Rendered by JS -->
+                    <h3>Select a component category to begin</h3>
+                </div>
+                <div class="builder-summary glass-panel">
+                    <h3>Build Summary</h3>
+                    <div class="summary-details" id="summary-details">
+                        <!-- Selected items will appear here -->
+                        <p class="empty-summary">No components selected yet.</p>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total:</span>
+                        <span class="total-price" id="builder-total">$0.00</span>
+                    </div>
+                    <button class="btn btn-neon w-100" id="add-build-to-cart" disabled>Add Build to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <h2 class="section-title">Best <span class="neon-text">Sellers</span></h2>
+        <div class="product-filters" id="product-filters">
+            <!-- Rendered by JS -->
+        </div>
+        <div class="product-grid" id="product-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer glass-panel">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="nav-brand"><span class="neon-text">Gaming</span> Hub</div>
+                <p>Empowering gamers and creators with extreme performance hardware.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="#builder">PC Builder</a>
+                <a href="#categories">Shop</a>
+                <a href="#">Support</a>
+                <a href="#">Warranty</a>
+            </div>
+            <div class="footer-social">
+                <h4>Connect With Us</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Newsletter</h4>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button class="btn btn-primary">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Gaming Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Cart Modal -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-modal glass-panel" id="cart-modal">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-btn" id="close-cart"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Rendered by JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="btn btn-neon w-100" id="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="auth-overlay" id="auth-overlay"></div>
+    <div class="auth-modal glass-panel" id="auth-modal">
+        <div class="auth-header">
+            <h3 style="margin: 0; font-size: 1.5rem;">Login to <span class="neon-text">Gaming Hub</span></h3>
+            <button class="close-btn" id="close-auth"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="auth-body">
+            <form id="login-form" class="checkout-form">
+                <input type="email" placeholder="Email Address" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="btn btn-neon w-100" style="margin-top: 1rem;">Sign In</button>
+            </form>
+            <div class="auth-footer" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+                <p>Don't have an account? <a href="#" class="neon-text"
+                        style="text-decoration: none; font-weight: 600;">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

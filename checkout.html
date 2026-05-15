@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Gaming Hub</title>
+    <meta name="description" content="Secure checkout for Gaming Hub.">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar glass-panel">
+        <div class="nav-brand">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+                <span class="neon-text">Gaming</span> Hub
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html#hero">Home</a>
+            <a href="index.html#categories">Categories</a>
+            <a href="index.html#builder">PC Builder</a>
+            <a href="index.html#products">Hardware</a>
+        </div>
+    </nav>
+
+    <!-- Checkout Section -->
+    <section class="checkout-page" style="padding-top: 8rem; min-height: 100vh;">
+        <h2 class="section-title">Secure <span class="neon-text">Checkout</span></h2>
+        
+        <div class="checkout-container">
+            <div class="checkout-form-container glass-panel">
+                <form id="page-checkout-form" class="checkout-form">
+                    <div class="form-section">
+                        <h4>Shipping Information</h4>
+                        <input type="text" placeholder="Full Name" required>
+                        <input type="email" placeholder="Email Address" required>
+                        <input type="text" placeholder="Shipping Address" required>
+                        <div class="form-row">
+                            <input type="text" placeholder="City" required>
+                            <input type="text" placeholder="Zip Code" required>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h4>Payment Details</h4>
+                        <input type="text" placeholder="Card Number" required>
+                        <div class="form-row">
+                            <input type="text" placeholder="MM/YY" required>
+                            <input type="text" placeholder="CVV" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-neon w-100" id="page-place-order-btn">Place Order</button>
+                </form>
+            </div>
+            
+            <div class="checkout-summary glass-panel">
+                <h3>Order Summary</h3>
+                <div class="checkout-items" id="checkout-items">
+                    <!-- Rendered by JS -->
+                </div>
+                <div class="cart-total mt-1 pt-1" style="border-top: 1px solid var(--glass-border); margin-top: 1rem; padding-top: 1rem;">
+                    <span>Total:</span>
+                    <span id="checkout-total-price">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="success-overlay" id="success-overlay"></div>
+    <div class="success-modal glass-panel" id="success-modal">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h3>Order Placed!</h3>
+        <p>Your premium hardware is on its way. Check your email for details.</p>
+        <button class="btn btn-primary" id="return-home-btn" style="margin-top: 1rem;">Return to Home</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/checkout.js"></script>
+</body>
+</html>
