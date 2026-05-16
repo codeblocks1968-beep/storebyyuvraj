@@ -837,6 +837,12 @@ section {
     font-family: inherit;
     outline: none;
     transition: border-color 0.3s ease;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2002;
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
 }
 
 .checkout-form input:focus {
@@ -1029,5 +1035,174 @@ section {
     .shop-sidebar {
         position: relative;
         top: 0;
+    }
+}
+
+/* Wheel Modal */
+.wheel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+.wheel-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wheel-container-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    max-width: 900px;
+    width: 95%;
+}
+
+.wheel-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    flex-shrink: 0;
+}
+
+.wheel-main {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 8px solid var(--glass-border);
+    border-radius: 50%;
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.2), inset 0 0 50px rgba(0, 243, 255, 0.1);
+    overflow: hidden;
+    transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+}
+
+.wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 0;
+    right: 0;
+    transform-origin: 0% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 50px;
+    box-sizing: border-box;
+}
+
+.wheel-segment span {
+    transform: rotate(45deg);
+    font-weight: 800;
+    font-family: var(--font-heading);
+    text-align: center;
+    max-width: 80px;
+    font-size: 0.9rem;
+    color: white;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.wheel-segment:nth-child(1) { transform: rotate(0deg); background: linear-gradient(45deg, #6366f1, #818cf8); }
+.wheel-segment:nth-child(2) { transform: rotate(90deg); background: linear-gradient(45deg, #10b981, #34d399); }
+.wheel-segment:nth-child(3) { transform: rotate(180deg); background: linear-gradient(45deg, #f59e0b, #fbbf24); }
+.wheel-segment:nth-child(4) { transform: rotate(270deg); background: linear-gradient(45deg, #ef4444, #f87171); }
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    clip-path: polygon(50% 100%, 0 0, 100% 0);
+    z-index: 10;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));
+}
+
+.wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 50%;
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.wheel-center:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.wheel-center::after {
+    content: 'SPIN';
+    font-weight: 800;
+    font-size: 0.8rem;
+    color: var(--bg-dark);
+}
+
+.wheel-content {
+    flex: 1;
+}
+
+.wheel-content h2 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+}
+
+.wheel-content p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.reward-display {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.reward-code {
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed var(--neon-blue);
+    padding: 1.5rem;
+    border-radius: 12px;
+    font-family: monospace;
+    font-size: 2rem;
+    margin: 1.5rem 0;
+    color: white;
+    letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+    .wheel-container-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+    }
+    .wheel-container {
+        width: 300px;
+        height: 300px;
+    }
+    .wheel-content h2 {
+        font-size: 2rem;
     }
 }

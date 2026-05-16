@@ -1,23 +1,27 @@
-const categories = [
-    { id: 1, title: 'Gaming PCs', image: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
-    { id: 2, title: 'Graphics Cards', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+const CATEGORIES_STORAGE_KEY = 'gaming_hub_categories';
+const PRODUCTS_STORAGE_KEY = 'gaming_hub_products';
+
+const defaultCategories = [
+    { id: 1, title: 'PCs', image: 'https://images.unsplash.com/photo-1587202372634-32705e3bf49c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { id: 2, title: 'Graphic Cards', image: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 3, title: 'Processors', image: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 4, title: 'Monitors', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 5, title: 'Accessories', image: 'https://images.unsplash.com/photo-1615663245857-ac1eeb5304ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 6, title: 'Custom Cooling', image: 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
-    { id: 7, title: 'Laptops', image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { id: 7, title: 'Laptops', image: 'https://images.unsplash.com/photo-1593642632823-8f785bf67e45?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 8, title: 'Keyboards', image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 9, title: 'Mice', image: 'https://images.unsplash.com/photo-1527814050087-379381547969?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 10, title: 'Consoles', image: 'https://images.unsplash.com/photo-1605898835373-023bbba1d242?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
     { id: 11, title: 'VR Headsets', image: 'https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
-    { id: 12, title: 'Printers', image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }
+    { id: 12, title: 'Printers', image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' },
+    { id: 13, title: 'Smart Phones', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80' }
 ];
 
-const products = [
+const defaultProducts = [
     {
         id: 101,
         name: 'Titan RTX 4090 Supreme',
-        category: 'Graphics Card',
+        category: 'Graphic Cards',
         price: 1899.99,
         rating: 4.9,
         reviews: 124,
@@ -44,7 +48,7 @@ const products = [
     {
         id: 104,
         name: 'TitanCraft Pro Build (AMD)',
-        category: 'Gaming PC',
+        category: 'PCs',
         price: 2499.99,
         rating: 5.0,
         reviews: 210,
@@ -53,7 +57,7 @@ const products = [
     {
         id: 105,
         name: 'Nebula X Extreme (Intel)',
-        category: 'Gaming PC',
+        category: 'PCs',
         price: 3299.99,
         rating: 4.9,
         reviews: 84,
@@ -62,7 +66,7 @@ const products = [
     {
         id: 106,
         name: 'Stealth Mini ITX',
-        category: 'Gaming PC',
+        category: 'PCs',
         price: 1599.99,
         rating: 4.7,
         reviews: 42,
@@ -71,7 +75,7 @@ const products = [
     {
         id: 107,
         name: 'Quantum Creator Workstation',
-        category: 'Gaming PC',
+        category: 'PCs',
         price: 4999.99,
         rating: 5.0,
         reviews: 12,
@@ -125,7 +129,7 @@ const products = [
     {
         id: 113,
         name: 'AMD Radeon RX 7900 XTX',
-        category: 'Graphics Card',
+        category: 'Graphic Cards',
         price: 999.99,
         rating: 4.8,
         reviews: 215,
@@ -152,7 +156,7 @@ const products = [
     {
         id: 116,
         name: 'Omen 45L Desktop',
-        category: 'Gaming PC',
+        category: 'PCs',
         price: 2199.99,
         rating: 4.6,
         reviews: 180,
@@ -247,8 +251,52 @@ const products = [
         rating: 4.6,
         reviews: 310,
         image: 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+        id: 127,
+        name: 'iPhone 15 Pro Max',
+        category: 'Smart Phone',
+        price: 1199.99,
+        rating: 4.9,
+        reviews: 1540,
+        image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+        id: 128,
+        name: 'Samsung Galaxy S24 Ultra',
+        category: 'Smart Phone',
+        price: 1299.99,
+        rating: 4.8,
+        reviews: 980,
+        image: 'https://images.unsplash.com/photo-1707064434292-1206f716616b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+    },
+    {
+        id: 129,
+        name: 'Google Pixel 8 Pro',
+        category: 'Smart Phone',
+        price: 999.99,
+        rating: 4.7,
+        reviews: 650,
+        image: 'https://images.unsplash.com/photo-1696423602161-026046e99996?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     }
 ];
+
+// Initialize Data from LocalStorage or Defaults
+let products = JSON.parse(localStorage.getItem(PRODUCTS_STORAGE_KEY)) || defaultProducts;
+let categories = JSON.parse(localStorage.getItem(CATEGORIES_STORAGE_KEY)) || defaultCategories;
+
+// Global helper functions to persist changes
+const syncToStorage = () => {
+    localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+};
+
+const resetToDefaults = () => {
+    products = [...defaultProducts];
+    categories = [...defaultCategories];
+    syncToStorage();
+    location.reload();
+};
 
 const pcComponents = {
     cpu: [

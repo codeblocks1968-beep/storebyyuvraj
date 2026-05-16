@@ -116,6 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.addEventListener('click', () => {
             authModal.classList.add('active');
             authOverlay.classList.add('active');
+            // Force focus on the first input
+            setTimeout(() => {
+                const firstInput = authModal.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }, 350);
         });
 
         const closeAuth = () => {
@@ -131,20 +136,102 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const email = loginForm.querySelector('input[type="email"]').value;
+            const password = loginForm.querySelector('input[type="password"]').value;
+            
             const btn = loginForm.querySelector('button');
+            const originalText = btn.textContent;
             btn.textContent = 'Signing in...';
+            
             setTimeout(() => {
-                alert('Login successful! Welcome back to Gaming Hub.');
-                authModal.classList.remove('active');
-                authOverlay.classList.remove('active');
-                btn.textContent = 'Sign In';
-                loginBtn.textContent = 'My Account';
+                if (Auth.login(email, password)) {
+                    alert('Login successful! Welcome back to Gaming Hub.');
+                    authModal.classList.remove('active');
+                    authOverlay.classList.remove('active');
+                    btn.textContent = originalText;
+                    updateAuthUI();
+                } else {
+                    alert('Invalid credentials.');
+                    btn.textContent = originalText;
+                }
             }, 1000);
         });
     }
+
+    // Check for auth redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auth') === 'login' && !Auth.isAuthenticated()) {
+        if (authModal && authOverlay) {
+            authModal.classList.add('active');
+            authOverlay.classList.add('active');
+        }
+    }
+
+    // Update UI based on auth state
+    function updateAuthUI() {
+        if (Auth.isAuthenticated()) {
+            const user = Auth.getUser();
+            if (loginBtn) {
+                loginBtn.textContent = 'Logout';
+                loginBtn.classList.replace('btn-primary', 'btn-outline');
+                loginBtn.onclick = (e) => {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to logout?')) {
+                        Auth.logout();
+                    }
+                };
+            }
+        } else {
+            if (loginBtn) {
+                loginBtn.textContent = 'Login';
+                loginBtn.classList.replace('btn-outline', 'btn-primary');
+                loginBtn.onclick = null; // Re-enable default modal behavior
+            }
+        }
+    }
     
+    // Force focus on click for login inputs
+    document.querySelectorAll('#login-form input').forEach(input => {
+        input.addEventListener('click', () => input.focus());
+    });
+
+    updateAuthUI();
     updateCartUI();
+
+    // Lucky Wheel Invitation for first-time visitors
+    if (!localStorage.getItem('gaming_hub_wheel_reward')) {
+        setTimeout(() => {
+            showLuckyToast();
+        }, 3000);
+    }
 });
+
+function showLuckyToast() {
+    const container = document.getElementById('toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = 'glass-panel px-6 py-4 rounded-3xl flex items-center gap-4 animate-fade-in shadow-2xl border border-primary/30';
+    toast.style.background = 'rgba(99, 102, 241, 0.1)';
+    toast.innerHTML = `
+        <div class="p-2 bg-primary/20 text-primary rounded-lg">
+            <i data-lucide="dharmachakra" class="w-6 h-6 animate-spin-slow"></i>
+        </div>
+        <div>
+            <p class="text-sm font-bold dark:text-white">New Gift Available!</p>
+            <p class="text-xs text-slate-500">Spin the wheel to win 50% OFF!</p>
+        </div>
+        <a href="lucky-wheel.html" class="btn btn-primary btn-sm px-4 py-2 text-xs">Spin Now</a>
+    `;
+    container.appendChild(toast);
+    if (window.lucide) lucide.createIcons();
+}
+
+function createToastContainer() {
+    const div = document.createElement('div');
+    div.id = 'toast-container';
+    div.className = 'fixed bottom-8 right-8 z-[200] space-y-4';
+    document.body.appendChild(div);
+    return div;
+}
 
 // Cart Logic
 function updateCartUI() {
@@ -208,8 +295,8 @@ function renderCategories() {
         
         card.addEventListener('click', () => {
             let targetCategory = cat.title;
-            if (targetCategory === 'Gaming PCs') targetCategory = 'Gaming PC';
-            if (targetCategory === 'Graphics Cards') targetCategory = 'Graphics Card';
+            if (targetCategory === 'PCs') targetCategory = 'PCs';
+            if (targetCategory === 'Graphic Cards') targetCategory = 'Graphic Cards';
             if (targetCategory === 'Processors') targetCategory = 'Processor';
             if (targetCategory === 'Monitors') targetCategory = 'Monitor';
             if (targetCategory === 'Accessories') targetCategory = 'Accessory';
@@ -220,6 +307,7 @@ function renderCategories() {
             if (targetCategory === 'Consoles') targetCategory = 'Console';
             if (targetCategory === 'VR Headsets') targetCategory = 'VR Headset';
             if (targetCategory === 'Printers') targetCategory = 'Printer';
+            if (targetCategory === 'Smart Phones') targetCategory = 'Smart Phone';
             
             window.location.href = `shop.html?category=${encodeURIComponent(targetCategory)}`;
         });

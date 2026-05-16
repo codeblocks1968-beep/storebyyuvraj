@@ -246,8 +246,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (loginBtn) {
             loginBtn.addEventListener('click', () => {
-                authModal.classList.add('active');
-                authOverlay.classList.add('active');
+                if (Auth.isAuthenticated()) {
+                    if (confirm('Are you sure you want to logout?')) {
+                        Auth.logout();
+                    }
+                } else {
+                    authModal.classList.add('active');
+                    authOverlay.classList.add('active');
+                    // Force focus on the first input
+                    setTimeout(() => {
+                        const firstInput = authModal.querySelector('input');
+                        if (firstInput) firstInput.focus();
+                    }, 350);
+                }
             });
         }
         const closeAuth = () => {
@@ -257,6 +268,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuth);
         if (authOverlay) authOverlay.addEventListener('click', closeAuth);
         
+        // Mock Login
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = loginForm.querySelector('input[type="email"]').value;
+                const password = loginForm.querySelector('input[type="password"]').value;
+                
+                const btn = loginForm.querySelector('button');
+                const originalText = btn.textContent;
+                btn.textContent = 'Signing in...';
+                
+                setTimeout(() => {
+                    if (Auth.login(email, password)) {
+                        alert('Login successful! Welcome back to Gaming Hub.');
+                        authModal.classList.remove('active');
+                        authOverlay.classList.remove('active');
+                        btn.textContent = originalText;
+                        updateAuthUI();
+                    } else {
+                        alert('Invalid credentials.');
+                        btn.textContent = originalText;
+                    }
+                }, 1000);
+            });
+        }
+
         const checkoutBtn = document.getElementById('checkout-btn');
         if (checkoutBtn) {
             checkoutBtn.addEventListener('click', () => {
@@ -266,6 +304,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 window.location.href = 'checkout.html';
             });
+        }
+
+        updateAuthUI();
+
+        // Force focus on click for login inputs
+        document.querySelectorAll('#login-form input').forEach(input => {
+            input.addEventListener('click', () => input.focus());
+        });
+    }
+
+    function updateAuthUI() {
+        if (Auth.isAuthenticated()) {
+            if (loginBtn) {
+                loginBtn.textContent = 'Logout';
+                loginBtn.classList.replace('btn-primary', 'btn-outline');
+            }
+        } else {
+            if (loginBtn) {
+                loginBtn.textContent = 'Login';
+                loginBtn.classList.replace('btn-outline', 'btn-primary');
+            }
         }
     }
 });

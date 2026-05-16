@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexTech Admin Dashboard | Premium eCommerce Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="js/auth.js"></script>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar"
+            class="w-64 glass-panel border-r border-slate-200 dark:border-slate-800 fixed h-full z-50 transition-all duration-300">
+            <div class="p-6 flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-800 dark:text-white">NexTech <span
+                        class="text-primary">Admin</span></h1>
+            </div>
+
+            <nav class="mt-6 px-4 space-y-2">
+                <a href="#" data-section="overview"
+                    class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Overview
+                </a>
+                <a href="#" data-section="products"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="package" class="w-5 h-5"></i> Products
+                </a>
+                <a href="#" data-section="offers"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="tag" class="w-5 h-5"></i> Offers & Discounts
+                </a>
+                <a href="#" data-section="analytics"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics
+                </a>
+                <div class="pt-4 pb-2 px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">System</div>
+                <a href="#"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Settings
+                </a>
+                <a href="index.html"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="external-link" class="w-5 h-5"></i> View Store
+                </a>
+                <a href="lucky-wheel.html" class="sidebar-link group">
+                    <i data-lucide="dharmachakra" class="w-5 h-5 group-hover:text-primary transition-colors"></i>
+                    <span>Lucky Spin</span>
+                </a>
+            </nav>
+
+            <div class="absolute bottom-8 left-0 w-full px-6">
+                <div class="bg-slate-100 dark:bg-slate-900 rounded-2xl p-4 flex items-center gap-3">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=6366f1&color=fff" alt="Profile"
+                        class="w-10 h-10 rounded-full">
+                    <div>
+                        <p class="text-sm font-semibold dark:text-white">Admin User</p>
+                        <p class="text-xs text-slate-500">Super Admin</p>
+                    </div>
+                    <button class="ml-auto text-slate-400 hover:text-red-500 transition-colors" onclick="Auth.logout()">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-8 transition-all duration-300">
+            <!-- Top Navbar -->
+            <header class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 id="page-title" class="text-2xl font-bold text-slate-800 dark:text-white">Dashboard Overview
+                    </h2>
+                    <p class="text-slate-500 dark:text-slate-400">Welcome back, here's what's happening today.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search anything..."
+                            class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                        <i data-lucide="search" class="absolute left-3 top-2.5 w-5 h-5 text-slate-400"></i>
+                    </div>
+                    <button id="theme-toggle"
+                        class="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                        <i data-lucide="sun" id="sun-icon"></i>
+                        <i data-lucide="moon" id="moon-icon" class="hidden"></i>
+                    </button>
+                    <button
+                        class="relative p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content Sections -->
+            <div id="content-area" class="space-y-8">
+                <!-- Overview Section -->
+                <section id="overview-section" class="animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <!-- Total Products -->
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-2xl">
+                                    <i data-lucide="package" class="w-6 h-6"></i>
+                                </div>
+                                <span id="stat-products-trend" class="text-xs font-bold text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-lg">Live</span>
+                            </div>
+                            <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Products</h3>
+                            <p id="stat-total-products" class="text-2xl font-bold dark:text-white mt-1">0</p>
+                        </div>
+
+                        <!-- Inventory Value -->
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-2xl">
+                                    <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-lg">Assets</span>
+                            </div>
+                            <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Inventory Value</h3>
+                            <p id="stat-inventory-value" class="text-2xl font-bold dark:text-white mt-1">$0</p>
+                        </div>
+
+                        <!-- Low Stock -->
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-orange-100 dark:bg-orange-900/30 text-orange-600 rounded-2xl">
+                                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                                </div>
+                                <span id="stat-low-stock-count" class="text-xs font-bold text-red-500 bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded-lg">0 Alerts</span>
+                            </div>
+                            <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Low Stock Items</h3>
+                            <p id="stat-out-of-stock" class="text-2xl font-bold dark:text-white mt-1">0</p>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-3 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-2xl">
+                                    <i data-lucide="layers" class="w-6 h-6"></i>
+                                </div>
+                                <span class="text-xs font-bold text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-lg">Active</span>
+                            </div>
+                            <h3 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Categories</h3>
+                            <p id="stat-total-categories" class="text-2xl font-bold dark:text-white mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 glass-panel p-6 rounded-3xl">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="font-bold text-lg dark:text-white">Revenue Analytics</h3>
+                                <select
+                                    class="bg-slate-100 dark:bg-slate-800 border-none rounded-lg px-3 py-1 text-sm focus:ring-0">
+                                    <option>Last 7 Days</option>
+                                    <option>Last 30 Days</option>
+                                </select>
+                            </div>
+                            <canvas id="revenueChart" height="300"></canvas>
+                        </div>
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <h3 class="font-bold text-lg mb-6 dark:text-white">Low Stock Alerts</h3>
+                            <div id="low-stock-list" class="space-y-4">
+                                <!-- Rendered by JS -->
+                            </div>
+                            <button
+                                class="w-full mt-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">View
+                                All Inventory</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section id="products-section" class="hidden animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex gap-4">
+                            <div class="relative">
+                                <input type="text" id="product-search" placeholder="Search products..."
+                                    class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 pl-10 w-64 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                                <i data-lucide="search" class="absolute left-3 top-2.5 w-5 h-5 text-slate-400"></i>
+                            </div>
+                            <select id="category-filter"
+                                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        <button id="add-product-btn"
+                            class="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/30 transition-all">
+                            <i data-lucide="plus" class="w-5 h-5"></i> Add New Product
+                        </button>
+                    </div>
+
+                    <div class="glass-panel rounded-3xl overflow-hidden">
+                        <table class="w-full text-left custom-table">
+                            <thead class="bg-slate-50 dark:bg-slate-900/50 text-slate-500">
+                                <tr>
+                                    <th class="px-6 py-4">Product</th>
+                                    <th class="px-6 py-4">Category</th>
+                                    <th class="px-6 py-4">Price</th>
+                                    <th class="px-6 py-4">Stock</th>
+                                    <th class="px-6 py-4">Status</th>
+                                    <th class="px-6 py-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Offers Section -->
+                <section id="offers-section" class="hidden animate-fade-in">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Offer Form Card -->
+                        <div class="glass-panel p-6 rounded-3xl lg:col-span-1">
+                            <h3 class="font-bold text-lg mb-6 dark:text-white">Create New Offer</h3>
+                            <form id="offer-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Campaign
+                                        Name</label>
+                                    <input type="text"
+                                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                                        placeholder="Summer Sale">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Coupon
+                                        Code</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="coupon-code"
+                                            class="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                                            placeholder="SUMMER2026">
+                                        <button type="button" onclick="generateCoupon()"
+                                            class="px-3 bg-slate-100 dark:bg-slate-800 rounded-xl hover:bg-slate-200 transition-all">
+                                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 dark:text-slate-300">Discount
+                                            %</label>
+                                        <input type="number"
+                                            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                                            placeholder="20">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 dark:text-slate-300">Minimum
+                                            Spend</label>
+                                        <input type="number"
+                                            class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                                            placeholder="100">
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-all">Launch
+                                    Campaign</button>
+                            </form>
+                        </div>
+                        <!-- Active Offers List -->
+                        <div class="lg:col-span-2 glass-panel p-6 rounded-3xl">
+                            <h3 class="font-bold text-lg mb-6 dark:text-white">Active Promotions</h3>
+                            <div class="space-y-4" id="offers-list">
+                                <!-- Rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="product-modal"
+        class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div
+            class="glass-panel w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl overflow-hidden animate-fade-in">
+            <div class="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h2 class="text-2xl font-bold dark:text-white">Add New Product</h2>
+                <button id="close-modal"
+                    class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <form id="product-form" class="p-8 grid grid-cols-2 gap-6">
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Product Name</label>
+                    <input type="text" name="name" required
+                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                        placeholder="e.g. MacBook Pro M3">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Category</label>
+                    <select name="category"
+                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Base Price ($)</label>
+                    <input type="number" name="price" required
+                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                        placeholder="999.99">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Stock Quantity</label>
+                    <input type="number" name="stock" required
+                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                        placeholder="50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Discount Price ($)</label>
+                    <input type="number" name="discountPrice"
+                        class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 focus:ring-primary/50"
+                        placeholder="Optional">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-sm font-medium mb-1 dark:text-slate-300">Product Images</label>
+                    <div
+                        class="upload-area h-32 rounded-2xl flex flex-col items-center justify-center text-slate-400 cursor-pointer">
+                        <i data-lucide="image-plus" class="w-8 h-8 mb-2"></i>
+                        <p class="text-sm">Click or drag images to upload</p>
+                    </div>
+                </div>
+                <div class="col-span-2 flex justify-end gap-4 mt-4">
+                    <button type="button" id="cancel-modal"
+                        class="px-6 py-2.5 rounded-xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Cancel</button>
+                    <button type="submit"
+                        class="px-8 py-2.5 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/30 hover:bg-primary-hover transition-all">Save
+                        Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-8 right-8 z-[200] space-y-4"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

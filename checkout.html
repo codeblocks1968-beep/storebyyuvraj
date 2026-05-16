@@ -60,9 +60,22 @@
                 <div class="checkout-items" id="checkout-items">
                     <!-- Rendered by JS -->
                 </div>
+                <div class="promo-section" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+                    <div class="flex gap-2" style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="promo-input" placeholder="Promo Code" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm w-full" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; padding: 0.5rem 1rem; width: 100%;">
+                        <button type="button" id="apply-promo-btn" class="btn btn-primary btn-sm">Apply</button>
+                    </div>
+                    <p id="promo-status" class="text-xs mt-2" style="font-size: 0.75rem; margin-top: 0.5rem;"></p>
+                </div>
                 <div class="cart-total mt-1 pt-1" style="border-top: 1px solid var(--glass-border); margin-top: 1rem; padding-top: 1rem;">
-                    <span>Total:</span>
-                    <span id="checkout-total-price">$0.00</span>
+                    <div id="discount-row" style="display: none; justify-content: space-between; margin-bottom: 0.5rem; color: var(--neon-green);">
+                        <span>Discount:</span>
+                        <span id="discount-amount">-$0.00</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem;">
+                        <span>Total:</span>
+                        <span id="checkout-total-price">$0.00</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,6 +91,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="js/auth.js"></script>
     <script src="js/checkout.js"></script>
 </body>
 </html>

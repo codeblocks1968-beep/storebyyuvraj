@@ -1,4 +1,24 @@
-:root {
+.nav-links a.admin-badge {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    font-weight: 600;
+}
+
+.footer-admin-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+.footer-admin-link:hover {
+    transform: translateX(5px);
+}
     /* Color Palette */
     --bg-dark: #0a0a0f;
     --bg-darker: #050507;

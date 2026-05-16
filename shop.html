@@ -23,6 +23,7 @@
             <a href="index.html#categories">Categories</a>
             <a href="index.html#builder">PC Builder</a>
             <a href="index.html#products">Hardware</a>
+            <a href="lucky-wheel.html" class="lucky-spin-btn"><i class="fas fa-dharmachakra"></i> Lucky Spin</a>
         </div>
         <div class="nav-actions">
             <input type="text" class="search-bar" id="shop-search" placeholder="Search products...">
@@ -102,8 +103,8 @@
         </div>
         <div class="auth-body">
             <form id="login-form" class="checkout-form">
-                <input type="email" placeholder="Email Address" required>
-                <input type="password" placeholder="Password" required>
+                <input type="email" id="shop-login-email" name="email" placeholder="Email Address" required autocomplete="email" style="pointer-events: auto;">
+                <input type="password" id="shop-login-password" name="password" placeholder="Password" required autocomplete="current-password" style="pointer-events: auto;">
                 <button type="submit" class="btn btn-neon w-100" style="margin-top: 1rem;">Sign In</button>
             </form>
             <div class="auth-footer" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
@@ -112,6 +113,7 @@
         </div>
     </div>
 
+    <script src="js/auth.js"></script>
     <script src="js/data.js"></script>
     <script src="js/shop.js"></script>
 </body>
