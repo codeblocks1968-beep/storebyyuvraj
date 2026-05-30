@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLowStock();
     renderProducts();
     renderOffers();
+    renderCustomerOrders();
     setupEventListeners();
     updateStats();
     
@@ -125,6 +126,11 @@ function setupEventListeners() {
     document.getElementById('category-filter').onchange = (e) => {
         renderProducts(document.getElementById('product-search').value, e.target.value);
     };
+
+    // Customer search
+    document.getElementById('customer-search').oninput = (e) => {
+        renderCustomerOrders(e.target.value);
+    };
 }
 
 // UI Rendering Functions
@@ -162,9 +168,11 @@ function switchSection(sectionId) {
         'overview': 'Dashboard Overview',
         'products': 'Product Management',
         'offers': 'Offers & Discounts',
+        'customers': 'Customer Details',
         'analytics': 'Sales Analytics'
     };
-    document.getElementById('page-title').innerText = titles[sectionId];
+    document.getElementById('page-title').innerText = titles[sectionId] || sectionId;
+    if (sectionId === 'customers') renderCustomerOrders();
 }
 
 function renderProducts(search = '', category = 'all') {
@@ -324,4 +332,125 @@ function deleteProduct(id) {
         updateStats();
         showToast('Product deleted');
     }
+}
+
+// ── Customer Details ──────────────────────────────────────────────────────────
+function renderCustomerOrders(search = '') {
+    const orders = JSON.parse(localStorage.getItem('gamingHub_orders')) || [];
+    const container = document.getElementById('customer-orders-list');
+    if (!container) return;
+
+    const filtered = orders.filter(o => {
+        const q = search.toLowerCase();
+        const c = o.customer || {};
+        return !q ||
+            (c.name  || '').toLowerCase().includes(q) ||
+            (o.id    || '').toLowerCase().includes(q) ||
+            (c.email || '').toLowerCase().includes(q);
+    });
+
+    // Update stats
+    const totalRevenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+    const uniqueNames  = new Set(orders.map(o => (o.customer && o.customer.name) ? o.customer.name.trim().toLowerCase() : null).filter(Boolean)).size;
+    document.getElementById('cust-total-orders').textContent  = orders.length;
+    document.getElementById('cust-total-revenue').textContent = '$' + totalRevenue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+    document.getElementById('cust-unique').textContent        = uniqueNames || orders.length;
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+                <i data-lucide="inbox" class="w-14 h-14 mb-4 opacity-40"></i>
+                <p class="font-semibold text-lg">No orders found</p>
+                <p class="text-sm mt-1">Orders placed via checkout will appear here.</p>
+            </div>`;
+        lucide.createIcons();
+        return;
+    }
+
+    const statusColors = {
+        processing: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30',
+        shipped:    'bg-blue-100   text-blue-600   dark:bg-blue-900/30',
+        delivered:  'bg-green-100  text-green-600  dark:bg-green-900/30',
+        cancelled:  'bg-red-100    text-red-500    dark:bg-red-900/30'
+    };
+
+    container.innerHTML = filtered.map(order => {
+        const c = order.customer || {};
+        const statusClass = statusColors[order.status] || statusColors.processing;
+        const date = order.date ? new Date(order.date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+        const address = [c.address, c.city, c.zip].filter(Boolean).join(', ') || '<span class="italic text-slate-400">Not provided</span>';
+
+        const itemsHtml = (order.items || []).map(item => `
+            <div class="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                <img src="${item.image || ''}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover bg-slate-100" onerror="this.src='https://placehold.co/40x40?text=PC'">
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium text-sm dark:text-white truncate">${item.name}</p>
+                    <p class="text-xs text-slate-500">${item.category || 'Hardware'}</p>
+                </div>
+                <span class="text-sm font-bold text-primary">$${(item.price||0).toFixed(2)}</span>
+            </div>
+        `).join('');
+
+        return `
+        <div class="border-b border-slate-100 dark:border-slate-800 last:border-0">
+            <!-- Header row -->
+            <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-5 hover:bg-slate-50 dark:hover:bg-slate-900/30 transition-colors cursor-pointer customer-row"
+                 onclick="this.nextElementSibling.classList.toggle('hidden')">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg">
+                        ${(c.name || 'G').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <p class="font-semibold dark:text-white">${c.name || '<span class="italic text-slate-400">Guest</span>'}</p>
+                        <p class="text-xs text-slate-500">${c.email || '—'}</p>
+                    </div>
+                </div>
+                <div class="text-sm text-slate-500">
+                    <span class="font-mono text-primary font-semibold">${order.id}</span>
+                    <span class="mx-2">•</span>${date}
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold capitalize ${statusClass}">${order.status}</span>
+                    <span class="font-bold dark:text-white">$${(order.total||0).toFixed(2)}</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+                </div>
+            </div>
+
+            <!-- Expandable detail panel -->
+            <div class="hidden px-6 pb-6 bg-slate-50 dark:bg-slate-900/20">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- Customer Info -->
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800">
+                        <h4 class="font-bold mb-4 dark:text-white flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4 text-primary"></i> Customer Info
+                        </h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex gap-2">
+                                <span class="text-slate-400 w-20 shrink-0">Name</span>
+                                <span class="font-medium dark:text-white">${c.name || '—'}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="text-slate-400 w-20 shrink-0">Email</span>
+                                <span class="font-medium dark:text-white">${c.email || '—'}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="text-slate-400 w-20 shrink-0">Address</span>
+                                <span class="font-medium dark:text-white">${address}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ordered Items -->
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800">
+                        <h4 class="font-bold mb-3 dark:text-white flex items-center gap-2">
+                            <i data-lucide="package" class="w-4 h-4 text-primary"></i> Ordered Products
+                        </h4>
+                        <div>${itemsHtml || '<p class="text-slate-400 text-sm">No items</p>'}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    lucide.createIcons();
 }

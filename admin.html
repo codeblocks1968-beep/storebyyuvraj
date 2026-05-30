@@ -54,6 +54,10 @@
                     class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
                     <i data-lucide="tag" class="w-5 h-5"></i> Offers & Discounts
                 </a>
+                <a href="#" data-section="customers"
+                    class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
+                    <i data-lucide="users" class="w-5 h-5"></i> Customer Details
+                </a>
                 <a href="#" data-section="analytics"
                     class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-medium">
                     <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Analytics
@@ -287,6 +291,59 @@
                             <div class="space-y-4" id="offers-list">
                                 <!-- Rendered by JS -->
                             </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customer Details Section -->
+                <section id="customers-section" class="hidden animate-fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold dark:text-white">All Customer Orders</h3>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Showing orders placed through checkout</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <input type="text" id="customer-search" placeholder="Search by name or order ID..."
+                                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 pl-10 w-72 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                            <i data-lucide="search" class="absolute" style="margin-left:-17rem; margin-top:0; pointer-events:none; color:#94a3b8;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Stats bar -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="glass-panel p-5 rounded-2xl flex items-center gap-4">
+                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-xl">
+                                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Total Orders</p>
+                                <p id="cust-total-orders" class="text-2xl font-bold dark:text-white">0</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl flex items-center gap-4">
+                            <div class="p-3 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-xl">
+                                <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Total Revenue</p>
+                                <p id="cust-total-revenue" class="text-2xl font-bold dark:text-white">$0</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl flex items-center gap-4">
+                            <div class="p-3 bg-violet-100 dark:bg-violet-900/30 text-violet-600 rounded-xl">
+                                <i data-lucide="package-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Unique Customers</p>
+                                <p id="cust-unique" class="text-2xl font-bold dark:text-white">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Orders Table -->
+                    <div class="glass-panel rounded-3xl overflow-hidden">
+                        <div id="customer-orders-list">
+                            <!-- Rendered by JS -->
                         </div>
                     </div>
                 </section>

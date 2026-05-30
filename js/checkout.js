@@ -103,11 +103,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // ── Save order to history ──────────────────────────────────────
             const finalTotal = parseFloat(checkoutTotalPrice.textContent.replace('$', ''));
             const orderId = 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+
+            // Collect customer shipping details
+            const inputs = checkoutForm.querySelectorAll('input');
+            const customerName    = inputs[0] ? inputs[0].value : '';
+            const customerEmail   = inputs[1] ? inputs[1].value : '';
+            const customerAddress = inputs[2] ? inputs[2].value : '';
+            const customerCity    = inputs[3] ? inputs[3].value : '';
+            const customerZip     = inputs[4] ? inputs[4].value : '';
+
             const newOrder = {
                 id: orderId,
                 date: new Date().toISOString(),
                 status: 'processing',
                 total: isNaN(finalTotal) ? total : finalTotal,
+                customer: {
+                    name: customerName,
+                    email: customerEmail,
+                    address: customerAddress,
+                    city: customerCity,
+                    zip: customerZip
+                },
                 items: cart.map(item => ({
                     name: item.name,
                     category: item.category || 'Hardware',
