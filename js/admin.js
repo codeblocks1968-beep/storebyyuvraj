@@ -368,23 +368,49 @@ function renderCustomerOrders(search = '') {
     }
 
     const statusColors = {
-        processing: 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30',
-        shipped:    'bg-blue-100   text-blue-600   dark:bg-blue-900/30',
-        delivered:  'bg-green-100  text-green-600  dark:bg-green-900/30',
-        cancelled:  'bg-red-100    text-red-500    dark:bg-red-900/30'
+        processing: { pill: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30', dot: '#eab308' },
+        shipped:    { pill: 'bg-blue-100   text-blue-700   dark:bg-blue-900/30',   dot: '#3b82f6' },
+        delivered:  { pill: 'bg-green-100  text-green-700  dark:bg-green-900/30',  dot: '#22c55e' },
+        cancelled:  { pill: 'bg-red-100    text-red-600    dark:bg-red-900/30',    dot: '#ef4444' }
     };
 
-    container.innerHTML = filtered.map(order => {
-        const c = order.customer || {};
-        const statusClass = statusColors[order.status] || statusColors.processing;
-        const date = order.date ? new Date(order.date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—';
+    const fmtDate = (iso) => {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    const fmtLong = (iso) => {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' });
+    };
+
+    const avatarColors = ['#6366f1','#8b5cf6','#ec4899','#f97316','#06b6d4','#10b981','#f59e0b'];
+    const avatarColor = (name) => avatarColors[(name || 'G').charCodeAt(0) % avatarColors.length];
+
+    container.innerHTML = filtered.map((order) => {
+        const c       = order.customer || {};
+        const name    = c.name  || 'Guest';
+        const email   = c.email || '—';
+        const sc      = statusColors[order.status] || statusColors.processing;
         const address = [c.address, c.city, c.zip].filter(Boolean).join(', ') || '<span class="italic text-slate-400">Not provided</span>';
+        const orderedOn   = fmtDate(order.date);
+        const deliveryOn  = fmtLong(order.estimatedDelivery);
+        const isDelivered = order.status === 'delivered';
+        const bgColor     = avatarColor(name);
+        const initial     = name.charAt(0).toUpperCase();
+
+        let daysLeft = '';
+        if (order.estimatedDelivery && !isDelivered) {
+            const diff = Math.ceil((new Date(order.estimatedDelivery) - Date.now()) / 86400000);
+            daysLeft = diff > 0 ? `${diff} day${diff !== 1 ? 's' : ''} left` : 'Arriving today!';
+        }
 
         const itemsHtml = (order.items || []).map(item => `
-            <div class="flex items-center gap-3 py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
-                <img src="${item.image || ''}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover bg-slate-100" onerror="this.src='https://placehold.co/40x40?text=PC'">
+            <div class="flex items-center gap-3 py-2.5 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                <img src="${item.image || ''}" alt="${item.name}"
+                     class="w-11 h-11 rounded-xl object-contain bg-slate-100 dark:bg-slate-800 p-1 flex-shrink-0"
+                     onerror="this.src='https://placehold.co/44x44?text=PC'">
                 <div class="flex-1 min-w-0">
-                    <p class="font-medium text-sm dark:text-white truncate">${item.name}</p>
                     <p class="text-xs text-slate-500">${item.category || 'Hardware'}</p>
                 </div>
                 <span class="text-sm font-bold text-primary">$${(item.price||0).toFixed(2)}</span>

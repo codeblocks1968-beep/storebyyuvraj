@@ -132,9 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const customerCity    = inputs[3] ? inputs[3].value : '';
             const customerZip     = inputs[4] ? inputs[4].value : '';
 
+            const orderDate = new Date();
+            const deliveryDays = 5 + Math.floor(Math.random() * 3); // 5–7 days
+            const deliveryDate = new Date(orderDate);
+            deliveryDate.setDate(deliveryDate.getDate() + deliveryDays);
+
             const newOrder = {
                 id: orderId,
-                date: new Date().toISOString(),
+                date: orderDate.toISOString(),
+                estimatedDelivery: deliveryDate.toISOString(),
                 status: 'processing',
                 total: isNaN(finalTotal) ? total : finalTotal,
                 customer: {

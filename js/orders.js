@@ -28,11 +28,18 @@ function daysAgo(n) {
 }
 
 // ── Seed demo orders if none exist ───────────────────────────────────────────
+function daysFromNow(n) {
+    const d = new Date();
+    d.setDate(d.getDate() + n);
+    return d.toISOString();
+}
+
 function seedDemoOrders() {
     const demoOrders = [
         {
             id: 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
             date: daysAgo(2),
+            estimatedDelivery: daysFromNow(5),
             status: 'processing',
             total: 2489.97,
             items: [
@@ -43,6 +50,7 @@ function seedDemoOrders() {
         {
             id: 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
             date: daysAgo(9),
+            estimatedDelivery: daysFromNow(2),
             status: 'shipped',
             total: 999.99,
             items: [
@@ -52,6 +60,7 @@ function seedDemoOrders() {
         {
             id: 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
             date: daysAgo(21),
+            estimatedDelivery: daysAgo(3),
             status: 'delivered',
             total: 1498.97,
             items: [
@@ -66,6 +75,7 @@ function seedDemoOrders() {
         {
             id: 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
             date: daysAgo(35),
+            estimatedDelivery: daysAgo(14),
             status: 'delivered',
             total: 499.99,
             items: [
@@ -75,6 +85,7 @@ function seedDemoOrders() {
         {
             id: 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase(),
             date: daysAgo(60),
+            estimatedDelivery: daysAgo(50),
             status: 'cancelled',
             total: 3299.99,
             items: [
@@ -89,7 +100,8 @@ function seedDemoOrders() {
 // ── Load orders ───────────────────────────────────────────────────────────────
 function loadOrders() {
     let orders = JSON.parse(localStorage.getItem(ORDERS_KEY));
-    if (!orders || orders.length === 0) {
+    // Re-seed if empty OR if stored orders are old format (missing estimatedDelivery)
+    if (!orders || orders.length === 0 || !orders.some(o => o.estimatedDelivery)) {
         orders = seedDemoOrders();
     }
     // Sort newest first
@@ -167,6 +179,24 @@ function buildOrderCard(order) {
 
     const trackingHtml = buildTrackingBar(order.status);
 
+    // Delivery date display
+    const deliveryDateHtml = order.estimatedDelivery ? (() => {
+        const dDate = new Date(order.estimatedDelivery);
+        const formatted = dDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        const daysLeft = Math.ceil((dDate - Date.now()) / 86400000);
+        const isDelivered = order.status === 'delivered';
+        const isCancelled = order.status === 'cancelled';
+        let badge = '';
+        if (isDelivered) badge = `<span style="background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.72rem;font-weight:700;">✓ Delivered</span>`;
+        else if (isCancelled) badge = `<span style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.72rem;font-weight:700;">Cancelled</span>`;
+        else if (daysLeft > 0) badge = `<span style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.3);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.72rem;font-weight:700;">${daysLeft} day${daysLeft!==1?'s':''} away</span>`;
+        else badge = `<span style="background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.72rem;font-weight:700;">Arriving today!</span>`;
+        return `<div style="display:flex;align-items:center;gap:0.6rem;margin-top:0.4rem;font-size:0.82rem;color:var(--text-secondary);"><i class="fas fa-truck" style="color:#6366f1;"></i><span>Est. Delivery: <strong style="color:#e2e8f0;">${formatted}</strong></span>${badge}</div>`;
+    })() : '';
+
+    // Cancel button — only for processing or shipped orders
+    const canCancel = order.status === 'processing' || order.status === 'shipped';
+
     return `
     <div class="order-card status-${statusCls}" data-status="${statusCls}" data-order-id="${order.id}">
         <!-- Header -->
@@ -174,6 +204,7 @@ function buildOrderCard(order) {
             <div class="order-id-section">
                 <div class="order-id">Order ID: <span>${order.id}</span></div>
                 <div class="order-date"><i class="fas fa-calendar-alt"></i>${formatDate(order.date)}</div>
+                ${deliveryDateHtml}
             </div>
             <span class="order-status-badge ${statusCls}">
                 <span class="status-dot"></span>
@@ -206,6 +237,10 @@ function buildOrderCard(order) {
                 <button class="btn-order-action reorder" onclick="reorder('${order.id}')">
                     <i class="fas fa-redo"></i> Reorder
                 </button>
+                ${canCancel ? `
+                <button class="btn-order-action cancel-btn" onclick="cancelOrder('${order.id}')" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.4);color:#ef4444;">
+                    <i class="fas fa-times-circle"></i> Cancel Order
+                </button>` : ''}
             </div>
         </div>
     </div>`;
@@ -299,10 +334,50 @@ function reorder(orderId) {
     if (cartCount) cartCount.textContent = cart.length;
 }
 
+function cancelOrder(orderId) {
+    const order = allOrders.find(o => o.id === orderId);
+    if (!order) return;
+    if (order.status !== 'processing' && order.status !== 'shipped') return;
+
+    // Confirm with user
+    const confirmed = confirm(`Cancel order ${orderId}?\n\nAre you sure you want to cancel this order? This action cannot be undone.`);
+    if (!confirmed) return;
+
+    // Update status in memory and localStorage
+    order.status = 'cancelled';
+    const stored = JSON.parse(localStorage.getItem(ORDERS_KEY)) || [];
+    const idx = stored.findIndex(o => o.id === orderId);
+    if (idx !== -1) { stored[idx].status = 'cancelled'; localStorage.setItem(ORDERS_KEY, JSON.stringify(stored)); }
+
+    // Show toast-style feedback
+    showOrderToast('Order cancelled successfully.', '#ef4444');
+
+    // Re-render with current filter
+    const activeFilter = document.querySelector('.filter-tab.active');
+    renderOrders(activeFilter ? activeFilter.dataset.filter : 'all');
+    renderStats();
+}
+
+function showOrderToast(msg, color) {
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position:fixed;bottom:2rem;right:2rem;z-index:9999;
+        background:#1e293b;border:1px solid ${color}44;
+        color:${color};padding:1rem 1.5rem;border-radius:14px;
+        font-weight:600;font-size:0.95rem;box-shadow:0 8px 32px rgba(0,0,0,0.4);
+        display:flex;align-items:center;gap:0.6rem;
+        animation:slide-in 0.3s ease;
+    `;
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = '0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
 function viewInvoice(orderId) {
     const order = allOrders.find(o => o.id === orderId);
     if (!order) return;
-    alert(`📄 Invoice for ${order.id}\n\nDate: ${formatDate(order.date)}\nStatus: ${order.status.toUpperCase()}\nItems: ${order.items.length}\nTotal: $${order.total.toFixed(2)}\n\n(A full invoice PDF would be emailed to you.)`);
+    const deliveryStr = order.estimatedDelivery ? `\nEst. Delivery: ${formatDate(order.estimatedDelivery)}` : '';
+    alert(`📄 Invoice for ${order.id}\n\nDate: ${formatDate(order.date)}${deliveryStr}\nStatus: ${order.status.toUpperCase()}\nItems: ${order.items.length}\nTotal: $${order.total.toFixed(2)}\n\n(A full invoice PDF would be emailed to you.)`);
 }
 
 function reviewOrder(orderId) {
