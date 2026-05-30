@@ -730,6 +730,7 @@ section {
     font-weight: 600;
     margin-bottom: 0.25rem;
     line-height: 1.2;
+    color: #ffffff;
 }
 
 .cart-item-price {
@@ -1181,14 +1182,14 @@ section {
 }
 
 .reward-code {
-    background: rgba(255,255,255,0.05);
+    background: #ffffff;
     border: 2px dashed var(--neon-blue);
     padding: 1.5rem;
     border-radius: 12px;
     font-family: monospace;
     font-size: 2rem;
     margin: 1.5rem 0;
-    color: white;
+    color: #000000;
     letter-spacing: 2px;
 }
 
