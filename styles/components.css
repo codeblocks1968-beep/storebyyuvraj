@@ -641,7 +641,6 @@ section {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
@@ -766,21 +765,20 @@ section {
 }
 
 /* Checkout & Success Modals */
-.checkout-overlay, .success-overlay {
+.checkout-overlay, .success-overlay, .auth-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.75);
     z-index: 2000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
 }
 
-.checkout-overlay.active, .success-overlay.active {
+.checkout-overlay.active, .success-overlay.active, .auth-overlay.active {
     opacity: 1;
     visibility: visible;
 }
@@ -831,7 +829,7 @@ section {
     width: 100%;
     padding: 0.8rem;
     margin-bottom: 1rem;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     color: var(--text-primary);
