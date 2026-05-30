@@ -13,18 +13,30 @@ const Auth = {
      * @returns {boolean}
      */
     login(email, password) {
-        // Mock authentication logic
-        // In a real app, this would be an API call
-        if (email && password) {
+        // Admin specific login
+        if (email === 'yuvrajlohiya16@gmail.com' && password === 'teddynumber09') {
             const user = {
                 email: email,
-                name: email.split('@')[0],
-                role: email.includes('admin') ? 'admin' : 'user',
+                name: 'Yuvraj',
+                role: 'admin',
                 lastLogin: new Date().toISOString()
             };
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
             return true;
         }
+        
+        // Mock standard user logic (if they log in as someone else, they just get a 'user' role)
+        if (email && password && email !== 'yuvrajlohiya16@gmail.com') {
+            const user = {
+                email: email,
+                name: email.split('@')[0],
+                role: 'user',
+                lastLogin: new Date().toISOString()
+            };
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
+            return true;
+        }
+        
         return false;
     },
 
