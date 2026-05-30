@@ -56,14 +56,33 @@
                 </form>
             </div>
             
-            <div class="checkout-summary glass-panel">
+        <div class="checkout-summary glass-panel">
                 <h3>Order Summary</h3>
+
+                <!-- Product count badge -->
+                <div id="checkout-item-count" style="
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-top: 0.75rem;
+                    background: rgba(0,243,255,0.1);
+                    border: 1px solid rgba(0,243,255,0.3);
+                    border-radius: 30px;
+                    padding: 0.35rem 1rem;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: var(--neon-blue);
+                ">
+                    <i class="fas fa-shopping-cart" style="font-size:0.8rem;"></i>
+                    <span id="item-count-text">0 items in cart</span>
+                </div>
+
                 <div class="checkout-items" id="checkout-items">
                     <!-- Rendered by JS -->
                 </div>
                 <div class="promo-section" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
                     <div class="flex gap-2" style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="promo-input" placeholder="Promo Code" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm w-full" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 8px; color: white; padding: 0.5rem 1rem; width: 100%;">
+                        <input type="text" id="promo-input" placeholder="Promo Code" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-sm w-full" style="background: rgba(255,255,255,0.92); border: 1px solid var(--glass-border); border-radius: 8px; color: #111; padding: 0.5rem 1rem; width: 100%; font-weight: 500;">
                         <button type="button" id="apply-promo-btn" class="btn btn-primary btn-sm">Apply</button>
                     </div>
                     <p id="promo-status" class="text-xs mt-2" style="font-size: 0.75rem; margin-top: 0.5rem;"></p>

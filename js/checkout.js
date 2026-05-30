@@ -12,7 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render Order Summary
     let total = 0;
     if (cart.length === 0) {
-        checkoutItemsContainer.innerHTML = '<p class="empty-summary">Your cart is empty.</p>';
+        checkoutItemsContainer.innerHTML = `
+            <div style="text-align:center; padding: 2.5rem 1rem; color: var(--text-secondary);">
+                <i class="fas fa-shopping-cart" style="font-size:2.5rem; opacity:0.3; display:block; margin-bottom:0.75rem;"></i>
+                <p style="font-style:italic;">Your cart is empty.</p>
+                <a href="shop.html" class="btn btn-primary" style="margin-top:1rem; display:inline-block;">Browse Products</a>
+            </div>`;
         const placeOrderBtn = document.getElementById('page-place-order-btn');
         placeOrderBtn.disabled = true;
         placeOrderBtn.textContent = 'Cart is empty';
@@ -21,17 +26,32 @@ document.addEventListener('DOMContentLoaded', () => {
             total += item.price;
             const div = document.createElement('div');
             div.className = 'cart-item fade-in';
-            div.style.paddingBottom = '1rem';
-            div.style.marginBottom = '1rem';
+            div.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                padding: 0.9rem;
+                margin-bottom: 0.75rem;
+                background: rgba(255,255,255,0.04);
+                border: 1px solid rgba(255,255,255,0.08);
+                border-radius: 12px;
+            `;
             div.innerHTML = `
-                <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-                <div class="cart-item-info">
-                    <div class="cart-item-title">${item.name}</div>
-                    <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                <img src="${item.image}" alt="${item.name}" class="cart-item-img" style="width:60px;height:60px;object-fit:contain;border-radius:8px;background:rgba(0,0,0,0.3);padding:6px;flex-shrink:0;">
+                <div style="flex:1;min-width:0;">
+                    <div class="cart-item-title" style="font-size:0.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:2px;">${item.category || 'Hardware'}</div>
                 </div>
+                <div class="cart-item-price" style="font-size:1rem;font-weight:700;white-space:nowrap;">$${item.price.toFixed(2)}</div>
             `;
             checkoutItemsContainer.appendChild(div);
         });
+    }
+
+    // Update item count badge
+    const countEl = document.getElementById('item-count-text');
+    if (countEl) {
+        countEl.textContent = cart.length === 1 ? '1 item in cart' : `${cart.length} items in cart`;
     }
     
     checkoutTotalPrice.textContent = `$${total.toFixed(2)}`;
