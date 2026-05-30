@@ -99,7 +99,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // Simulate API call
         setTimeout(() => {
             placeOrderBtn.textContent = originalText;
-            
+
+            // ── Save order to history ──────────────────────────────────────
+            const finalTotal = parseFloat(checkoutTotalPrice.textContent.replace('$', ''));
+            const orderId = 'GH-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            const newOrder = {
+                id: orderId,
+                date: new Date().toISOString(),
+                status: 'processing',
+                total: isNaN(finalTotal) ? total : finalTotal,
+                items: cart.map(item => ({
+                    name: item.name,
+                    category: item.category || 'Hardware',
+                    price: item.price,
+                    image: item.image
+                }))
+            };
+            const existingOrders = JSON.parse(localStorage.getItem('gamingHub_orders')) || [];
+            existingOrders.unshift(newOrder);
+            localStorage.setItem('gamingHub_orders', JSON.stringify(existingOrders));
+            // ──────────────────────────────────────────────────────────────
+
             // Show success modal
             successModal.classList.add('active');
             successOverlay.classList.add('active');

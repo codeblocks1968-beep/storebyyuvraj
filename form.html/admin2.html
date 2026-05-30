@@ -1,0 +1,139 @@
+<!-- =========================
+FILE 2: admin.html
+Admin Dashboard
+========================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+
+  <style>
+
+    body{
+      background:#121212;
+      color:white;
+      font-family:Arial, sans-serif;
+      padding:20px;
+    }
+
+    h1{
+      text-align:center;
+      color:#ff9800;
+      margin-bottom:25px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#1f1f1f;
+    }
+
+    th, td{
+      border:1px solid #333;
+      padding:12px;
+      text-align:center;
+    }
+
+    th{
+      background:#ff9800;
+      color:white;
+    }
+
+    tr:nth-child(even){
+      background:#2a2a2a;
+    }
+
+  </style>
+</head>
+<body>
+
+<h1>Tournament Registrations</h1>
+
+<table>
+
+  <thead>
+
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Age</th>
+      <th>Category</th>
+      <th>Tournament</th>
+      <th>Time</th>
+    </tr>
+
+  </thead>
+
+  <tbody id="tableBody"></tbody>
+
+</table>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXXXXXX",
+  appId: "XXXXXXXX"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+async function loadData(){
+
+  const querySnapshot =
+    await getDocs(collection(db, "registrations"));
+
+  const tableBody =
+    document.getElementById("tableBody");
+
+  querySnapshot.forEach((doc) => {
+
+    const data = doc.data();
+
+    tableBody.innerHTML += `
+
+      <tr>
+
+        <td>${data.name}</td>
+        <td>${data.email}</td>
+        <td>${data.phone}</td>
+        <td>${data.age}</td>
+        <td>${data.category}</td>
+        <td>${data.game}</td>
+        <td>${data.time}</td>
+
+      </tr>
+
+    `;
+
+  });
+
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Dashboard</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+      linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
+      url('https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1600&auto=format&fit=crop');
+
+      background-size:cover;
+      background-position:center;
+      color:white;
+      padding:30px;
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:25px;
+      font-size:40px;
+      color:#ffcc00;
+    }
+
+    .login-box,
+    .dashboard{
+      max-width:1100px;
+      margin:auto;
+      background:rgba(255,255,255,0.12);
+      backdrop-filter:blur(10px);
+      padding:25px;
+      border-radius:15px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .dashboard{
+      display:none;
+    }
+
+    .form-group{
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:bold;
+    }
+
+    input{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:8px;
+      outline:none;
+      font-size:16px;
+    }
+
+    .btn{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:8px;
+      background:#ff9800;
+      color:white;
+      font-size:18px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      background:#e68900;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+      overflow-x:auto;
+    }
+
+    th, td{
+      border:1px solid rgba(255,255,255,0.2);
+      padding:12px;
+      text-align:center;
+      font-size:14px;
+    }
+
+    th{
+      background:#ff9800;
+    }
+
+    tr:nth-child(even){
+      background:rgba(255,255,255,0.05);
+    }
+
+    .delete-btn{
+      background:red;
+      border:none;
+      padding:8px 12px;
+      color:white;
+      border-radius:5px;
+      cursor:pointer;
+    }
+
+    .delete-btn:hover{
+      background:darkred;
+    }
+
+    .logout-btn{
+      background:#2196f3;
+      margin-top:15px;
+    }
+
+    @media(max-width:900px){
+
+      table{
+        font-size:12px;
+      }
+
+      th, td{
+        padding:8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Login Box -->
+  <div class="login-box" id="loginBox">
+
+    <h1>🔐 Admin Login</h1>
+
+    <div class="form-group">
+      <label>Enter Admin Password</label>
+      <input type="password" id="adminPassword" placeholder="Enter Password">
+    </div>
+
+    <button class="btn" onclick="loginAdmin()">
+      Login
+    </button>
+
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dashboard" id="dashboard">
+
+    <h1>📋 Admin Dashboard</h1>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Age</th>
+          <th>Category</th>
+          <th>Game</th>
+          <th>Team</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody">
+
+      </tbody>
+
+    </table>
+
+    <button class="btn logout-btn" onclick="logoutAdmin()">
+      Logout
+    </button>
+
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      deleteDoc,
+      doc
+    }
+
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // YOUR FIREBASE CONFIG
+    const firebaseConfig = {
+
+      apiKey: "YOUR_API_KEY",
+
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+
+      projectId: "YOUR_PROJECT_ID",
+
+      storageBucket: "YOUR_PROJECT.appspot.com",
+
+      messagingSenderId: "XXXXXXXX",
+
+      appId: "YOUR_APP_ID"
+
+    };
+
+    // Firebase Initialize
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore(app);
+
+    const loginBox = document.getElementById("loginBox");
+
+    const dashboard = document.getElementById("dashboard");
+
+    const tableBody = document.getElementById("tableBody");
+
+    // LOGIN FUNCTION
+    window.loginAdmin = function(){
+
+      const password =
+      document.getElementById("adminPassword").value;
+
+      if(password === "2015"){
+
+        loginBox.style.display = "none";
+
+        dashboard.style.display = "block";
+
+        loadPlayers();
+
+      }
+
+      else{
+
+        alert("❌ Wrong Password");
+
+      }
+
+    }
+
+    // LOGOUT
+    window.logoutAdmin = function(){
+
+      dashboard.style.display = "none";
+
+      loginBox.style.display = "block";
+
+      document.getElementById("adminPassword").value = "";
+
+    }
+
+    // LOAD PLAYERS
+    async function loadPlayers(){
+
+      tableBody.innerHTML = "";
+
+      const querySnapshot =
+      await getDocs(collection(db, "players"));
+
+      querySnapshot.forEach((docData) => {
+
+        const player = docData.data();
+
+        const row = `
+          <tr>
+
+            <td>${player.name}</td>
+
+            <td>${player.email}</td>
+
+            <td>${player.phone}</td>
+
+            <td>${player.age}</td>
+
+            <td>${player.category}</td>
+
+            <td>${player.game}</td>
+
+            <td>${player.team || "-"}</td>
+
+            <td>
+
+              <button
+              class="delete-btn"
+              onclick="deletePlayer('${docData.id}')">
+
+              Delete
+
+              </button>
+
+            </td>
+
+          </tr>
+        `;
+
+        tableBody.innerHTML += row;
+
+      });
+
+    }
+
+    // DELETE PLAYER
+    window.deletePlayer = async function(id){
+
+      await deleteDoc(doc(db, "players", id));
+
+      loadPlayers();
+
+    }
+
+  </script>
+
+</body>
+</html>
